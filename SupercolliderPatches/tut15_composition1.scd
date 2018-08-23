@@ -16,7 +16,8 @@ SynthDef(\bpfsaw, {
 		Env([0,1,1,0],
 			[atk,sus,rel],
 			[c1,0,c2]),
-		doneAction:2);
+		doneAction:2
+	);
 
 	sig = Saw.ar(freq * {LFNoise1.kr(0.5,detune).midiratio}!2);
 	sig = BPF.ar(
@@ -31,7 +32,73 @@ SynthDef(\bpfsaw, {
 	sig = sig * env * amp;
 	Out.ar(out,sig);
 }).add;
+
+
+SynthDef(\bpfbuf, {
+	arg atk=0,sus=0,rel=3,c1=1,c2=(-1),
+	buf=0,rate=1,spos=0,freq=440,rq=1,bpfmix=0,
+	pan=0,amp=1,out=0;
+	var sig,env;
+
+	env = EnvGen.kr(
+		Env([0,1,1,0],
+			[atk,sus,rel],
+			[c1,0,c2]),
+		doneAction:2
+	);
+	sig = PlayBuf.ar(1,buf,rate*BufRateScale.ir(buf),startPos:spos);
+	sig = XFade2.ar(sig,BPF.ar(sig,freq,rq,1/rq.sqrt), bpfmix*2-1);
+	sig = sig * env;
+	sig = Pan2.ar(sig,pan,amp);
+	Out.ar(out,sig);
+}).add;
+
+
 )
+
+
+(
+b = Dictionary.new;
+PathName("/home/kamilp/Documents/Supercollider/SupercolliderSamples/Perc/Comp1").entries.do{
+	arg subFolder;
+	b.add(
+		subFolder.folderName.asSymbol ->
+		Array.fill(
+			subFolder.entries.size,
+			{
+				arg i;
+				Buffer.read(s,subFolder.entries[i].fullPath);
+			}
+		)
+	);
+};
+)
+
+
+b.keys;
+
+b[\shakers][11].play;
+
+
+(
+rrand(5,10).do{
+Synth(\bpfbuf,
+	[
+		\buf,b[\shakers][[0,9,10,11].choose],
+		\atk,exprand(2,3),
+		\sus,3,
+		\rel,exprand(5,8),
+		\bpfmix,1,
+		\freq,(Scale.lydian.degrees+69).choose.midicps * [1,2].choose,
+		\rq, exprand(0.001,0.008),
+		\rate,exprand(1.2,2.4),
+		\pan, rrand(-0.5,0.5),
+		\amp,exprand(4,6),
+	]
+);
+}
+)
+
 
 (
 ~chords = Pbind(
@@ -50,7 +117,7 @@ SynthDef(\bpfsaw, {
 	\atk,Pwhite(2.0,2.5,inf),
 	\rel,Pwhite(6.5,10.0,inf),
 	\ldb,6,
-	\amp, 0.5,
+	\amp, 0.7,
 	\out,0,
 ).play;
 )
