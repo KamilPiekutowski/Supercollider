@@ -1,4 +1,6 @@
 s.boot;
+s.plotTree;
+s.meter;
 
 
 (
@@ -13,23 +15,25 @@ SynthDef(\sine, {
 }).add;
 )
 
+Synth.new(\sine);
+
 (
-Pdef(
+p = Pdef(
 	\sinepat,
     Pbind(
 		\instrument, \sine,
 		\dur, Pwhite(0.05, 0.5, inf),
-		\midinote, Pseq([35], inf).trace,
+		\midinote, Pseq([35,50], inf).trace,
 		\harmonic, Pexprand(1, 10, inf).round,
 		\atk, Pwhite(0.01, 0.1, inf),
 		\rel, Pwhite(5.0, 10.0, inf),
 		\amp, Pkey(\harmonic).reciprocal * 0.3,
-		\pan, Pwhite(-0.8, 0.8, inf),
+		\pan, Pwhite(-0.8, -0.7, inf),
 	);
-).stop;
+);
 )
 
+p.play;
 p.stop;
 
-Env.new([0,1,0],[0.004,0.3],[1,-1]).plot;
 
