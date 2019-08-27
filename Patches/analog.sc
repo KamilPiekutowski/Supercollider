@@ -23,11 +23,13 @@ SynthDef(\analog, {
 
 (
 SynthDef(\delay, {
-	arg in, out=0, buff=0, mix=1.0, maxDelayTime=1.0, delayTime=0.1, amp=1.8;
+	arg in, decay=0.5, amp=0.8, out=0;
 	var sig = In.ar(in, 2);
-	sig = DelayN.ar(sig,maxDelayTime, delayTime, mix);
-	sig = sig * amp;
-	Out.ar(out, sig);
+	var local = LocalIn.ar(2) + sig.dup;
+
+	15.do{local = AllpassN .ar(sig, 0.05, [0.05.rand, 0.05.rand], 0.01)};
+	LocalOut.ar(local * decay);
+	Out.ar(out, local);
 }).add;
 )
 
