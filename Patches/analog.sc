@@ -52,13 +52,6 @@ Synth.new(\analog, [\freq, 58.midicps]);
 
 Env.perc(10.0,2.0, 1.0, 0).plot;
 
-{
-~seq = [0.2,0.5,0.4,0.3];
-~pitch = [48, 51, 55, 58].midicps;
-~sust = [0.05, 0.1, 0.5, 0.2, 0.01];
-~atk = [0.05, 0.05, 0.03];
-}
-
 //start play
 r = Synh.new(\delay, [\in, ~delayBus]);
 r.set(\mix, 0.5, \maxDelayTime, 0.6, \delayTime, 1.0);
