@@ -13,7 +13,6 @@ SynthDef(\analog, {
 		Pulse.ar(freq, SinOsc.kr(0.05).range(0.2,0.40))
 	];
 
-	DelayN
 
 	env = EnvGen.ar(Env.perc(atk, sust), doneAction:2);
 	sig = sig * env * amp;
@@ -47,8 +46,8 @@ Env.perc(10.0,2.0, 1.0, 0).plot;
 {
 ~seq = [0.2,0.5,0.4,0.3];
 ~pitch = [48, 51, 55, 58].midicps;
-~sust = [0.05, 0.1, 0.5, 0.05, 0.01];
-~atk = [0.05, 0.05, 0.02];
+~sust = [0.05, 0.1, 0.5, 0.2, 0.01];
+~atk = [0.05, 0.05, 0.03];
 }
 
 //start play
@@ -80,6 +79,7 @@ Pdef(\pulse,
 	);
 ).quant_(2.0 / 4);
 )
+
 
 
 60/120 * 4;
