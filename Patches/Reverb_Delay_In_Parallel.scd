@@ -3,6 +3,11 @@ s.meter;
 s.plotTree;
 
 (
+
+~synthGroup = Group.new(s);
+~fxGroup = Group.new(~synthGroup, \addAfter);
+~mixerGroup = Group.new(~fxGroup, \addAfter);
+
 SynthDef.new(\tone, {
 	arg freq=1000, out=0;
 	var sig, env;
@@ -40,15 +45,12 @@ SynthDef.new(\mix, {
 	Out.ar(0, main);
 }).add;
 
+~mix  = Synth.new(\mix, target:~mixerGroup);
+~rev1 = Synth.new(\reverb, [\in, 40, \out, 50], ~fxGroup);
+~rev2 = Synth.new(\delay, [\in, 40, \out, 52], ~fxGroup);
+
 )
 
-(
-~mix  = Synth.new(\mix);
-~rev1 = Synth.new(\reverb, [\in, 40, \out, 50]);
-~rev2 = Synth.new(\delay, [\in, 40, \out, 52]);
-)
-
-
-~tone = Synth.new(\tone, [\out, 40]);
+~tone = Synth.new(\tone, [\out, 40], ~synthGroup);
 
 s.scope;
